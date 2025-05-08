@@ -5,7 +5,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 const About = () => {
   return (
     <>
-    <div className="container mb-1 mt-5">
+    
+    <div className="container mb-1 mt-5 pt-5">
       <div className="text-center">
         <h1 className="mb-4 text-primary fw-bold">About Our Hospital Management System</h1>
         <p className="lead text-muted">Efficient Healthcare Through Technology</p>

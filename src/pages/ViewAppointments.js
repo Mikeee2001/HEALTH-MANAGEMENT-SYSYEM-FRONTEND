@@ -2,50 +2,60 @@ import React, { useEffect, useState } from "react";
 import api from "../api/Api";
 import { toast, ToastContainer } from "react-toastify";
 import "bootstrap/dist/css/bootstrap.min.css";
+import '../styles/css.css';
 
 const ViewAppointments = () => {
     const [appointments, setAppointments] = useState([]);
     const [selectedAppointment, setSelectedAppointment] = useState(null);
+    const [loading, setLoading] = useState(true); // ✅ Added loading state
 
     useEffect(() => {
-        api.get("/api/auth/book-appointments") 
-            .then(response => {
-                if (response.data.success) {
-                    setAppointments(response.data.users.flatMap(user => user.appointments));
+        const token = sessionStorage.getItem("token"); // ✅ Ensure using sessionStorage
+
+        if (!token) {
+            toast.error("No authentication token found. Please log in.", { position: "top-right", autoClose: 5000 });
+            setLoading(false);
+            return;
+        }
+
+        api.get("/api/auth/user-appointments", {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(response => {
+            if (response.data.success) {
+                if (response.data.appointments.length > 0) {
+                    setAppointments(response.data.appointments);
                 } else {
-                    toast.error(response.data.message || "Failed to load appointments.");
+                    toast.info("No appointments found for this user.", { position: "top-right", autoClose: 3000 });
                 }
-            })
-            .catch(error => {
-                console.error("Error fetching appointments:", error.response?.data || "No error details");
-                toast.error("An error occurred while fetching appointments.");
-            });
+            } else {
+                toast.error(response.data.message || "Failed to load appointments.");
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching appointments:", error.response?.data || "No error details");
+            toast.error("An error occurred while fetching appointments.");
+        })
+        .finally(() => setLoading(false));
     }, []);
 
-    // ✅ Open Modal with Selected Appointment Details
-    const openModal = (appointment) => {
-        setSelectedAppointment(appointment);
-    };
-
-    // ✅ Close Modal
-    const closeModal = () => {
-        setSelectedAppointment(null);
-    };
+    const openModal = (appointment) => setSelectedAppointment(appointment);
+    const closeModal = () => setSelectedAppointment(null);
 
     return (
-        <div className="table-responsive mb-5">
+        <div className="d-flex justify-content-center align-items-center mt-5" style={{ minHeight: "50vh" }}>
             <ToastContainer />
-            <div className="card shadow-lg p-4">
+            <div className="card shadow-lg p-4" style={{ width: "100%" }}>
                 <h2 className="text-center mb-4 text-primary">Appointments List</h2>
 
-                {appointments.length === 0 ? (
-                    <div className="alert alert-danger text-center">
-                        No appointments found.
-                    </div>
+                {loading ? (
+                    <div className="text-center fs-4 text-primary">Loading...</div>
+                ) : appointments.length === 0 ? (
+                    <div className="alert alert-danger text-center">No appointments found for this user.</div>
                 ) : (
                     <div className="table-responsive">
-                        <table className="table table-bordered table-hover text-center">
-                            <thead className="table-dark">
+                        <table className="table table-bordered table-hover text-center table-text">
+                            <thead className="table-dark fs-5">
                                 <tr>
                                     <th>#</th>
                                     <th>Appointment Name</th>
@@ -65,7 +75,7 @@ const ViewAppointments = () => {
                                     const formattedTime = `${hours % 12 || 12}:${minutes} ${period}`;
 
                                     return (
-                                        <tr key={appointment.id}>
+                                        <tr key={appointment.id} className="fs-6">
                                             <td className="fw-bold">{index + 1}</td>
                                             <td className="fw-bold">{appointment.appointment_name}</td>
                                             <td>{date}</td>
@@ -85,7 +95,7 @@ const ViewAppointments = () => {
                                             </td>
                                             <td>
                                                 <button className="btn btn-info btn-sm" onClick={() => openModal(appointment)}>
-                                                    View
+                                                    <i className="fas fa-eye fs-3"></i>
                                                 </button>
                                             </td>
                                         </tr>
@@ -97,16 +107,15 @@ const ViewAppointments = () => {
                 )}
             </div>
 
-            {/* ✅ Bootstrap Modal */}
             {selectedAppointment && (
                 <div className="modal fade show d-block" tabIndex="-1">
-                    <div className="modal-dialog">
+                    <div className="modal-dialog modal-lg">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title">Appointment Details</h5>
+                                <h5 className="modal-title fs-1">Appointment Details</h5>
                                 <button type="button" className="btn-close" onClick={closeModal}></button>
                             </div>
-                            <div className="modal-body">
+                            <div className="modal-body modal-text">
                                 <p><strong>Name:</strong> {selectedAppointment.appointment_name}</p>
                                 <p><strong>Date:</strong> {selectedAppointment.date_time.split("T")[0]}</p>
                                 <p><strong>Time:</strong> {selectedAppointment.date_time.split("T")[1].slice(0, 5)}</p>

@@ -10,7 +10,8 @@ const Header = () => {
 
   const handleLogout = async () => {
     try {
-      const token = localStorage.getItem("token");
+
+      const token = sessionStorage.getItem("token"); 
 
       if (!token) {
         toast.error("No authentication token found!", { position: "top-right", autoClose: 5000 });
@@ -22,8 +23,8 @@ const Header = () => {
       });
 
       // ✅ Remove user session correctly
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("user");
 
       setUser(null);
       setToken(null);
@@ -40,6 +41,7 @@ const Header = () => {
       toast.error("Logout failed. Please try again.", { position: "top-right", autoClose: 5000 });
     }
   };
+
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary fixed-top shadow">
@@ -63,7 +65,7 @@ const Header = () => {
                 </li>
               </>
             ) : (
-              <>
+              <>     
                 <li className="nav-item">
                   <Link className="nav-link text-white fw-bold" to="/doctors">Doctors</Link>
                 </li>

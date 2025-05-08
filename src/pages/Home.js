@@ -1,32 +1,23 @@
-import React, { useEffect } from "react";
-import Header from "../pages/Header"; // ✅ Corrected import path
-import DoctorsList from "../pages/DoctorList"; // ✅ Ensure correct path
-import About from "../pages/About"; // ✅ Ensure correct path
+import React from "react";
+import Header from "../pages/Header"; 
+import DoctorsList from "../pages/DoctorList"; 
+import About from "../pages/About"; 
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const Home = () => {
-  useEffect(() => {
-    const handleScroll = () => {
-      const elements = document.querySelectorAll(".fade-in");
-      elements.forEach((el) => {
-        const rect = el.getBoundingClientRect();
-        if (rect.top < window.innerHeight * 0.85) {
-          el.classList.add("show");
-        }
-      });
-    };
+import ScrollEffect from "../components/ScrollEffect";
+import SlideShow from "../components/SlideShow";
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+const Home = () => {
 
   return (
     <>
-      <Header /> 
-      <div className="container mt-5">
-        <h2 className="text-center mb-4">Welcome to Our Hospital Management System</h2>
+    <ScrollEffect />
+      <Header />     
 
-        
+      <div className="container mt-5">
+      <SlideShow />
+      </div>
+
         <div className="fade-in">
           <DoctorsList /> 
         </div>
@@ -34,7 +25,6 @@ const Home = () => {
         <div className="fade-in">
           <About /> 
         </div>
-      </div>
     </>
   );
 };

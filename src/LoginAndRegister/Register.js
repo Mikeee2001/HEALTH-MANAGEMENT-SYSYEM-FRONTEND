@@ -23,20 +23,28 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-        const response = await api.post("/api/auth/register-users", formData);
+        const response = await api.post("/api/auth/register-users", formData, {
+            headers: { "Content-Type": "application/json" }
+        });
 
         if (response.data.success) {
             console.log("Token:", response.data.token);
-            sessionStorage.setItem("token", response.data.token); // ✅ Store token in sessionStorage
-            toast.success("Registration successful! Please log in.", { position: "top-right", autoClose: 3000 }); // ✅ Success message
-            navigate("/");
+            sessionStorage.setItem("token", response.data.token); // ✅ Store token temporarily
+            sessionStorage.setItem("user", JSON.stringify(response.data.user)); // ✅ Store user session info
+            
+
+            toast.success("Registration successful! Redirecting...", { position: "top-right", autoClose: 3000 });
+
+            setTimeout(() => {
+                navigate("/home"); // ✅ Redirect after success
+            }, 2000);
         } else {
-            toast.error("Unexpected error occurred.", { position: "top-right", autoClose: 5000 }); // ✅ Error message
+            toast.error(response.data.message || "Unexpected error occurred.", { position: "top-right", autoClose: 5000 });
         }
     } catch (error) {
         console.error("Error:", error);
         setErrorMessages(error.response?.data?.errors || {});
-        toast.error("Registration failed! Please check your input.", { position: "top-right", autoClose: 5000 }); // ✅ Error handling
+        toast.error(error.response?.data?.message || "Registration failed! Email may already exist.", { position: "top-right", autoClose: 5000 });
     }
   };
 
@@ -52,7 +60,7 @@ const Register = () => {
       <ToastContainer />
       <div className="card p-4 shadow-lg text-white" style={{ width: "800px", borderRadius: "10px", backgroundColor: "rgba(0, 0, 0, 0.7)" }}>
         <h2 className="text-center mb-4" style={{ fontSize: "32px", fontWeight: "bold" }}>Register</h2>
-        
+
         <form onSubmit={handleRegister} className="row g-3">
           <div className="col-md-6">
             <label htmlFor="username" className="form-label fs-5 fw-bold">Username:</label>

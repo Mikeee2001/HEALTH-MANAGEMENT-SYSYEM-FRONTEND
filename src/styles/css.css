@@ -96,4 +96,30 @@
       background-size: 80px 80px;
     }
   }
+  .table-text {
+    font-size: 16px; 
+  }
   
+  .modal-text {
+    font-size: 18px; 
+  }
+  
+
+
+/* ✅ Center the carousel */
+.carousel-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  margin: auto;
+}
+
+/* ✅ Fix image size */
+.carousel-img {
+  width: 100%;
+  height: 300px; 
+  object-fit: cover; 
+}
+
+

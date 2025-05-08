@@ -6,29 +6,63 @@ import "../styles/css.css";
 const DoctorsList = () => {
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState(""); // ✅ Added state for search input
   const navigate = useNavigate();
 
+  // ✅ Define `fetchDoctors` before using it
+  const fetchDoctors = async () => {
+    setLoading(true);
+    try {
+      const response = await api.get("/api/auth/display/doctors");
+      console.log("Doctors API Response:", response.data);
+      setDoctors(response.data.doctors || []);
+    } catch (error) {
+      console.error("Error fetching doctors:", error);
+      setDoctors([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    api.get("/api/auth/display/doctors")
-      .then((response) => {
-        console.log("Doctors API Response:", response.data);
-        setDoctors(response.data.doctors || []);
-      })
-      .catch((error) => {
-        console.error("Error fetching doctors:", error);
-        setDoctors([]);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    fetchDoctors(); // ✅ Now it's defined before use
   }, []);
+
+  // ✅ Handle Doctor Search
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) {
+      fetchDoctors(); // ✅ Reset doctor list when search is empty
+      return;
+    }
+
+    try {
+      const response = await api.get(`/api/auth/search-doctors?query=${searchQuery}`);
+      setDoctors(response.data.doctors || []);
+    } catch (error) {
+      console.error("Search error:", error);
+    }
+  };
 
   return (
     <div className="container mt-5">
-      <h2 className="text-center mb-4">Our Doctors</h2>
+      <h2 className="text-center mb-4">Doctors List</h2>
+
+      {/* ✅ Search Bar Inside Doctors Container */}
+      <div className="d-flex justify-content-center mb-4">
+        <input
+          type="text"
+          placeholder="Search doctors..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="form-control w-50 me-2"
+        />
+        <button className="btn btn-primary fw-bold" onClick={handleSearch}>
+          Search
+        </button>
+      </div>
 
       {loading ? (
-        <div className="loader-container"> {/* ✅ Centers the loader on screen */}
+        <div className="loader-container">
           <span className="loader"></span>
         </div>
       ) : (
@@ -61,7 +95,7 @@ const DoctorsList = () => {
               <p>No doctors found.</p>
             </div>
           )}
-        </div>
+        </div> 
       )}
     </div>
   );

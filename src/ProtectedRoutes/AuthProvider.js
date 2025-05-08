@@ -5,27 +5,35 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
 
-  // ✅ Retrieve user details when app starts (on refresh)
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    const storedToken = localStorage.getItem("token");
+    try {
+      const storedUser = sessionStorage.getItem("user");
+      const storedToken = sessionStorage.getItem("token");
 
-    if (storedUser && storedToken) {
-      setUser(storedUser);
-      setToken(storedToken);
+      if (storedUser && storedToken) {
+        setUser(JSON.parse(storedUser)); // ✅ Prevents errors on JSON parsing
+        setToken(storedToken);
+      }
+    } catch (error) {
+      console.error("Error retrieving user session:", error);
     }
   }, []);
 
   const login = (userData, authToken) => {
-    localStorage.clear(); // ✅ Clear previous session
-    localStorage.setItem("user", JSON.stringify(userData));
-    localStorage.setItem("token", authToken);
+    sessionStorage.removeItem("user"); // ✅ More precise session clearing
+    sessionStorage.removeItem("token");
+
+    sessionStorage.setItem("user", JSON.stringify(userData));
+    sessionStorage.setItem("token", authToken);
+
     setUser(userData);
     setToken(authToken);
   };
 
   const logout = () => {
-    localStorage.clear(); // ✅ Remove local storage completely
+    sessionStorage.removeItem("user"); // ✅ Prevents clearing unrelated session data
+    sessionStorage.removeItem("token");
+
     setUser(null);
     setToken(null);
   };
