@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../api/Api";
 import { toast, ToastContainer } from "react-toastify";
 
@@ -95,6 +95,14 @@ const Register = () => {
           <div className="col-12 text-center">
             <button type="submit" className="btn btn-primary w-50 py-2 fs-5 fw-bold">Register</button>
           </div>
+
+          <div className="text-center mt-3">
+              <span className="fw-bold text-white">Already have an account?</span>
+              <Link to="/" className="ms-2 text-warning fw-bold">
+                  Login Now
+              </Link>
+          </div>
+
         </form>
       </div>
     </div>

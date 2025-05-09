@@ -4,16 +4,20 @@ import { toast, ToastContainer } from "react-toastify";
 import "bootstrap/dist/css/bootstrap.min.css";
 import '../styles/css.css';
 
+
 const ViewAppointments = () => {
+
     const [appointments, setAppointments] = useState([]);
     const [selectedAppointment, setSelectedAppointment] = useState(null);
-    const [loading, setLoading] = useState(true); // ✅ Added loading state
+    const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const token = sessionStorage.getItem("token"); // ✅ Ensure using sessionStorage
+    // ✅ Define function before `useEffect`
+    const fetchAppointments = () => {
+        setLoading(true);
+        const token = sessionStorage.getItem("token");
 
         if (!token) {
-            toast.error("No authentication token found. Please log in.", { position: "top-right", autoClose: 5000 });
+            toast.error("No authentication token found. Please log in.");
             setLoading(false);
             return;
         }
@@ -23,24 +27,49 @@ const ViewAppointments = () => {
         })
         .then(response => {
             if (response.data.success) {
-                if (response.data.appointments.length > 0) {
-                    setAppointments(response.data.appointments);
-                } else {
-                    toast.info("No appointments found for this user.", { position: "top-right", autoClose: 3000 });
-                }
+                setAppointments(response.data.appointments || []);
             } else {
                 toast.error(response.data.message || "Failed to load appointments.");
             }
         })
         .catch(error => {
-            console.error("Error fetching appointments:", error.response?.data || "No error details");
+            console.error("Error fetching appointments:", error);
             toast.error("An error occurred while fetching appointments.");
         })
         .finally(() => setLoading(false));
+    };
+
+    // ✅ `useEffect` calls `fetchAppointments` on component mount
+    useEffect(() => {
+        fetchAppointments();
     }, []);
 
     const openModal = (appointment) => setSelectedAppointment(appointment);
     const closeModal = () => setSelectedAppointment(null);
+
+    // ✅ Call `fetchAppointments()` after deletion to refresh table
+    const deleteAppointment = (appointmentId) => {
+        if (!appointmentId) {
+            toast.error("Invalid appointment ID.");
+            return;
+        }
+
+        if (window.confirm("Are you sure you want to delete this appointment?")) {
+            api.delete(`/api/auth/delete-appointment/${appointmentId}`)
+                .then(response => {
+                    if (response.data.success) {
+                        toast.success("Appointment deleted successfully!");
+                        fetchAppointments(); // ✅ Refresh the table
+                    } else {
+                        toast.error(response.data.message || "Failed to delete appointment.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error deleting appointment:", error.message);
+                    toast.error("Failed to delete appointment. Please try again.");
+                });
+        }
+    };
 
     return (
         <div className="d-flex justify-content-center align-items-center mt-5" style={{ minHeight: "50vh" }}>
@@ -55,7 +84,7 @@ const ViewAppointments = () => {
                 ) : (
                     <div className="table-responsive">
                         <table className="table table-bordered table-hover text-center table-text">
-                            <thead className="table-dark fs-5">
+                            <thead className="table-secondary fs-5">
                                 <tr>
                                     <th>#</th>
                                     <th>Appointment Name</th>
@@ -76,8 +105,8 @@ const ViewAppointments = () => {
 
                                     return (
                                         <tr key={appointment.id} className="fs-6">
-                                            <td className="fw-bold">{index + 1}</td>
-                                            <td className="fw-bold">{appointment.appointment_name}</td>
+                                            <td>{index + 1}</td>
+                                            <td>{appointment.appointment_name}</td>
                                             <td>{date}</td>
                                             <td>{formattedTime}</td>
                                             <td>{appointment.appointment_type}</td>
@@ -86,16 +115,22 @@ const ViewAppointments = () => {
                                                     ? `${appointment.doctor.firstname} ${appointment.doctor.lastname}`
                                                     : <span className="badge bg-danger">No Doctor Assigned</span>}
                                             </td>
+
                                             <td>
                                                 {appointment.appointment_status 
-                                                    ? <span className={`badge ${appointment.appointment_status.status === "pending" ? "bg-warning" : "bg-success"}`}>
+                                                    ? <span className="bold border-secondary text-dark">
                                                         {appointment.appointment_status.status}
                                                     </span>
                                                     : <span className="badge bg-secondary">No Status</span>}
                                             </td>
+
+                                            {/* ✅ Removed `<tr>` inside `<td>` */}
                                             <td>
-                                                <button className="btn btn-info btn-sm" onClick={() => openModal(appointment)}>
+                                                <button className="icon-button" onClick={() => openModal(appointment)}>
                                                     <i className="fas fa-eye fs-3"></i>
+                                                </button>
+                                                <button className="icon-button" onClick={() => deleteAppointment(appointment.id)}>
+                                                    <i className="fas fa-trash fs-3"></i>
                                                 </button>
                                             </td>
                                         </tr>

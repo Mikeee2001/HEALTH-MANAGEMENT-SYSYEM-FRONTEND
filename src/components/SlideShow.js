@@ -13,6 +13,7 @@ import slide6 from "./images/OIP (2).jpg";
 import slide7 from "./images/OIP (3).jpg";
 import slide8 from "./images/OIP.jpg";
 import slide9 from "./images/R.jpg";
+import slide10 from "./images/luffy.jpg";
 
 const SlideShow = () => {
   return (
@@ -45,6 +46,9 @@ const SlideShow = () => {
           </div>
           <div className="carousel-item">
             <img src={slide9} className="d-block carousel-img" alt="Slide 9" />
+          </div>
+          <div className="carousel-item">
+            <img src={slide10} className="d-block carousel-img" alt="Slide 10" />
           </div>
         </div>
 

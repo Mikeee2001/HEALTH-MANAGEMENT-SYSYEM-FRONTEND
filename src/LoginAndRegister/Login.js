@@ -74,9 +74,14 @@ const Login = () => {
                     <button type="submit" className="btn btn-primary w-100 py-2 fs-5 fw-bold" disabled={loading}>
                         {loading ? "Logging in..." : "Login"}
                     </button>
-                    <div>
-                        <Link to="/register">Register</Link>
+                    
+                    <div className="text-center mt-3">
+                    <span className="fw-bold text-white">Don't have an account?</span>
+                        <Link to="/register" className="ms-2 text-warning fw-bold">
+                            Register Now
+                        </Link>
                     </div>
+
                 </form>
             </div>
         </div>

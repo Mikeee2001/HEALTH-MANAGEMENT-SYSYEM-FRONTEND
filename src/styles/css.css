@@ -122,4 +122,19 @@
   object-fit: cover; 
 }
 
+.icon-button {
+    background: none;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.icon-button i {
+    color: #333; /* Adjust the color if needed */
+    font-size: 1.5rem; /* Adjust the size */
+}
+
+.icon-button:hover i {
+    color: red; /* Optional: Add a hover effect */
+}
 

@@ -32,7 +32,7 @@ const About = () => {
             <div className="card-body">
               <i className="bi bi-calendar2-check fs-1 text-primary"></i>
               <h5 className="card-title mt-3">Appointment Scheduling</h5>
-              <p className="card-text text-muted">Easily schedule and manage patient appointments.</p>
+              <p className="card-text text-muted">Easily schedule and manage users appointments.</p>
             </div>
           </div>
         </div>
@@ -42,7 +42,7 @@ const About = () => {
             <div className="card-body">
               <i className="bi bi-file-earmark-medical fs-1 text-success"></i>
               <h5 className="card-title mt-3">Medical Records</h5>
-              <p className="card-text text-muted">Secure and organized patient records management.</p>
+              <p className="card-text text-muted">Secure and organized users records management.</p>
             </div>
           </div>
         </div>

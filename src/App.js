@@ -17,6 +17,7 @@ import ProtectedLayout from "../src/ProtectedRoutes/ProtectedLayout";
 import BookAppointments from "./pages/BookAppointments";
 import ViewAppointments from "./pages/ViewAppointments";
 
+
 // Main application component
 function App() {
   return (
@@ -38,7 +39,7 @@ function App() {
             <Route path="/book-appointment" element={<BookAppointments />} />
             <Route path="/view-appointment" element={<ViewAppointments />} />
           </Route>
-        </Route>
+         </Route>
 
         </Routes>
       </Router>
