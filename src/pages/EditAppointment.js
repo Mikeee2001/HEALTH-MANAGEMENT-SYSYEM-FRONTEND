@@ -124,6 +124,7 @@ const EditAppointment = () => {
                             onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
                             required
                         >
+                             <option value="" disabled selected>Select type</option>
                             <option value="checkup">Check-up</option>
                             <option value="emergency">Emergency</option>
                             <option value="follow-up">Follow-up</option>
