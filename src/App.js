@@ -16,6 +16,7 @@ import About from "../src/pages/About";
 import ProtectedLayout from "../src/ProtectedRoutes/ProtectedLayout";
 import BookAppointments from "./pages/BookAppointments";
 import ViewAppointments from "./pages/ViewAppointments";
+import EditAppointment from "../src/pages/EditAppointment";
 
 
 // Main application component
@@ -36,8 +37,9 @@ function App() {
             <Route path="/doctors" element={<DoctorsList />} />
             <Route path="/about" element={<About />} />
             <Route path="/book-appointment/:id" element={<BookAppointments />} />
-            <Route path="/book-appointment" element={<BookAppointments />} />
+            {/* <Route path="/book-appointment" element={<BookAppointments />} /> */}
             <Route path="/view-appointment" element={<ViewAppointments />} />
+             <Route path="/edit-appointment/:id" element={<EditAppointment />} />
           </Route>
          </Route>
 

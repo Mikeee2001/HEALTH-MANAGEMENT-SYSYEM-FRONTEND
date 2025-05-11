@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/Api";
+import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "bootstrap/dist/css/bootstrap.min.css";
 import '../styles/css.css';
@@ -10,6 +11,8 @@ const ViewAppointments = () => {
     const [appointments, setAppointments] = useState([]);
     const [selectedAppointment, setSelectedAppointment] = useState(null);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate(); 
+
 
     // ✅ Define function before `useEffect`
     const fetchAppointments = () => {
@@ -92,7 +95,7 @@ const ViewAppointments = () => {
                                     <th>Time</th>
                                     <th>Type</th>
                                     <th>Assign Doctor</th>
-                                    <th>Status</th>
+                                    
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -116,18 +119,20 @@ const ViewAppointments = () => {
                                                     : <span className="badge bg-danger">No Doctor Assigned</span>}
                                             </td>
 
-                                            <td>
+                                            {/* <td>
                                                 {appointment.appointment_status 
                                                     ? <span className="bold border-secondary text-dark">
                                                         {appointment.appointment_status.status}
                                                     </span>
                                                     : <span className="badge bg-secondary">No Status</span>}
-                                            </td>
+                                            </td> */}
 
-                                            {/* ✅ Removed `<tr>` inside `<td>` */}
                                             <td>
                                                 <button className="icon-button" onClick={() => openModal(appointment)}>
                                                     <i className="fas fa-eye fs-3"></i>
+                                                </button>
+                                                 <button className="icon-button" onClick={() => navigate(`/edit-appointment/${appointment.id}`)}>
+                                                    <i className="fas fa-edit fs-3"></i>
                                                 </button>
                                                 <button className="icon-button" onClick={() => deleteAppointment(appointment.id)}>
                                                     <i className="fas fa-trash fs-3"></i>
@@ -156,7 +161,7 @@ const ViewAppointments = () => {
                                 <p><strong>Time:</strong> {selectedAppointment.date_time.split("T")[1].slice(0, 5)}</p>
                                 <p><strong>Type:</strong> {selectedAppointment.appointment_type}</p>
                                 <p><strong>Doctor:</strong> {selectedAppointment.doctor ? `${selectedAppointment.doctor.firstname} ${selectedAppointment.doctor.lastname}` : "No Doctor Assigned"}</p>
-                                <p><strong>Status:</strong> {selectedAppointment.appointment_status ? selectedAppointment.appointment_status.status : "No Status"}</p>
+                               
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" onClick={closeModal}>
